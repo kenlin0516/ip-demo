@@ -13,10 +13,16 @@
   <div id="ip">載入中…</div>
 
   <script>
+    // 取到 IP
     fetch('https://api.ipify.org?format=json')
       .then(res => res.json())
       .then(data => {
-        document.getElementById('ip').textContent = data.ip;
+        const ip = data.ip;
+        document.getElementById('ip').textContent = ip;
+
+        // 再把 IP 丟到你的 Apps Script
+        fetch('https://script.google.com/macros/s/你的-部署ID/exec?ip=' + encodeURIComponent(ip))
+          .catch(console.error);
       })
       .catch(err => {
         console.error(err);
