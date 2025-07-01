@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <title>取得訪客 IP</title>
+  <style>
+    body { font-family: sans-serif; text-align: center; padding-top: 50px; }
+    #ip { font-size: 2rem; color: #007acc; }
+  </style>
+</head>
+<body>
+  <h1>您的 IP 位址是：</h1>
+  <div id="ip">載入中…</div>
+
+  <script>
+    fetch('https://api.ipify.org?format=json')
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById('ip').textContent = data.ip;
+      })
+      .catch(err => {
+        console.error(err);
+        document.getElementById('ip').textContent = '取得失敗';
+      });
+  </script>
+</body>
+</html>
