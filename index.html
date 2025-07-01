@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-  <meta charset="UTF-8">
-  <title>取得訪客 IP</title>
+  <meta charset="UTF-8"/>
+  <title>取得訪客 IP 並記錄</title>
   <style>
     body { font-family: sans-serif; text-align: center; padding-top: 50px; }
     #ip { font-size: 2rem; color: #007acc; }
@@ -13,21 +13,29 @@
   <div id="ip">載入中…</div>
 
   <script>
-    // 取到 IP
+    // 先去 ipify 拿到使用者真實 IP
     fetch('https://api.ipify.org?format=json')
       .then(res => res.json())
       .then(data => {
         const ip = data.ip;
         document.getElementById('ip').textContent = ip;
 
-        // 再把 IP 丟到你的 Apps Script
-        fetch('https://script.google.com/macros/s/你的-部署ID/exec?ip=' + encodeURIComponent(ip))
-          .catch(console.error);
+        // 用 JSONP 把 IP 送到你的 Apps Script 後端
+        const scriptEl = document.createElement('script');
+        scriptEl.src = 'https://script.google.com/macros/s/AKfycbypaux-KXLiRAthpriCXg8PZ0DnrWF9XjWufg02Z-fcy3VEF2BxIN8ebrsUG4W2d2Lk/exec'
+                      + '?ip=' + encodeURIComponent(ip)
+                      + '&callback=record';
+        document.head.appendChild(scriptEl);
       })
       .catch(err => {
         console.error(err);
         document.getElementById('ip').textContent = '取得失敗';
       });
+
+    // JSONP 回呼：確認後端已記錄
+    function record(res) {
+      console.log('Logged:', res);
+    }
   </script>
 </body>
 </html>
